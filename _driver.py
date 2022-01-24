@@ -84,7 +84,6 @@ def page_is_loaded(timeout=10): # quit after (timeout) seconds
 
 def add_to_output(name, value):
   output[name] = value
-  print("{0}: {1}".format(name, value))
 
 
 def check_matches():

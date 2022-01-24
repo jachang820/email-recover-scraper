@@ -20,9 +20,11 @@ DEFAULT_EMAIL = 'some_email@domain.com'
 
 if __name__ == '__main__':
   # Enter email on command line as in ./scraper.py email
-  email, service, parser = _args.handle_args()
+  email, service, quiet_mode, parser = _args.handle_args()
   config = importlib.import_module('_' + service).config
-  parser.print_help() # Delete this line if you don't need help
+
+  if not quiet_mode:
+    parser.print_help() # Delete this line if you don't need help
 
   if email is None: # or manually
     email = DEFAULT_EMAIL
@@ -38,6 +40,8 @@ if __name__ == '__main__':
   # Enter email address and click next
   enter_email(email)
 
+  past_matches = set()
+
   while True:
 
     # Wait for element to load before continuing
@@ -48,6 +52,11 @@ if __name__ == '__main__':
       break
 
     check_matches()
+    if not quiet_mode:
+      for key, value in output.items():
+        if key not in past_matches:
+          print("{0}: {1}".format(key, value))
+          past_matches.add(key)
 
     # Click button for next screen
     if exit_condition():

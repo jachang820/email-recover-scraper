@@ -1,9 +1,9 @@
 _span = lambda text: '''//span[text()="{0}"]'''.format(text)
 
 
-def _get_devices(str):
+def _get_devices(div):
   # Get first sentence
-  sentence = str.split('.')[0]
+  sentence = div.text.split('.')[0]
 
   # Get everything after 'Google sent a notification to your...'
   device_words = sentence.split(' ')[6:]
