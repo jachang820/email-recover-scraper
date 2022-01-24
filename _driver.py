@@ -1,4 +1,5 @@
 import time
+import random
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import NoSuchElementException, \
   StaleElementReferenceException
@@ -7,7 +8,7 @@ driver = None
 output = {}
 config = None
 page = None
-loading_time = 1
+loading_time = ()
 pages_seen = 0
 
 def set_driver(driver_to_set):
@@ -18,10 +19,16 @@ def set_driver(driver_to_set):
 def configure(config_):
   global config
   config = config_
+  random.seed()
 
 
-def loading_wait_time(seconds=1):
-  loading_time = seconds
+def set_loading_time_range(min_sec=1, max_sec=2.5):
+  global loading_time
+  loading_time = (min_sec, max_sec)
+
+
+def loading_wait_time():
+  return random.uniform(*loading_time)
 
 
 def find(xpath):
@@ -66,7 +73,7 @@ def check_load_elements(timeout):
 
 def page_is_loaded(timeout=10): # quit after (timeout) seconds
   global page, pages_seen
-  time.sleep(loading_time)
+  time.sleep(loading_wait_time())
   page = check_load_elements(timeout=10)
 
   if page:

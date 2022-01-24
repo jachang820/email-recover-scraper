@@ -33,7 +33,7 @@ if __name__ == '__main__':
 
   set_driver(driver)
   configure(config)
-  loading_wait_time(1) # seconds to wait for page to load
+  set_loading_time_range(1., 2.5) # seconds to wait for page to load
 
   # Enter email address and click next
   enter_email(email)
