@@ -27,10 +27,10 @@ config = {
   
   'pages': [{ # Forgot password?
     'load': [
-      _span("Forgot password?"),
+      "//div[@id='forgotPassword']//button",
       "//div[text()='Try another way to sign in']"],
-    'next': _span("Forgot password?"),
-    'unload': _span("Forgot password?")
+    'next': "//div[@id='forgotPassword']//button",
+    'unload': "//div[@id='forgotPassword']//button"
 
   }, { # Do you have your phone?
     'load': "//strong[text()='Do you have your phone?']",
@@ -42,7 +42,7 @@ config = {
     'next': _span("More ways to sign in"),
     'unload': _span("More ways to sign in")
 
-  }{ # Last password
+  }, { # Last password
     'load': "//div[starts-with(text(), 'Enter the last password')]",
     'next': _span("Try another way"),
     'unload': _span("Try another way")
@@ -74,7 +74,7 @@ config = {
       'xpath': "//span[contains(text(), '•')]",
       'function': lambda x: x.text.strip() },
     'next': _span("Try another way"),
-    'unload': _span("Try another way")
+    'unload': "//div[@id='idvpreregisteredemailNext']//button"
 
   }, { # Phone
     'load': [
@@ -85,7 +85,13 @@ config = {
       'xpath': "//span[contains(text(), '•')]",
       'function': lambda x: x.text.strip() },
     'next': _span("I don’t have my phone"),
-    'unload': _span("I don’t have my phone")
+    'unload': "//div[@id='smsButton']//button"
+    
+  }, { # Failed screen
+    'load': "//div[contains(text(), 'confirm this account belongs to you')]",
+    'next': "//div[@id='accountRecoveryButton']//button",
+    'unload': "//div[@id='accountRecoveryButton']//button"
+
   }],
 
   'exit_xpath': _span("Try again"),

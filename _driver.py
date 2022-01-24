@@ -54,7 +54,8 @@ def check_load_elements(timeout):
         load_xpaths = [load_xpaths]
 
       for xpath in load_xpaths:
-        element = find(xpath)
+        element = find(xpath) or element
+
       if element:
         current_page = page
         break
