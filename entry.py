@@ -2,8 +2,8 @@
 
 import sys
 
-email_address = 'katsucats1985'
-service = 'gmail'
+email_address = 'f'
+service = 'apple'
 
 old_argv = sys.argv
 output = None
