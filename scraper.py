@@ -53,10 +53,11 @@ if __name__ == '__main__':
 
     check_matches()
     if not quiet_mode:
-      for key, value in output.items():
-        if key not in past_matches:
-          print("{0}: {1}".format(key, value))
-          past_matches.add(key)
+      for key, values in output.items():
+        for value in values:
+          if value not in past_matches:
+            print("{0}: {1}".format(key, value))
+            past_matches.add(value)
 
     # Click button for next screen
     if exit_condition():

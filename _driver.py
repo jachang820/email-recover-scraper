@@ -31,9 +31,12 @@ def loading_wait_time():
   return random.uniform(*loading_time)
 
 
-def find(xpath):
+def find(xpath, multiple=False):
   try:
-    element = driver.find_element(By.XPATH, xpath)
+    if multiple:
+      element = driver.find_elements(By.XPATH, xpath)
+    else:
+      element = driver.find_element(By.XPATH, xpath)
   except NoSuchElementException:
     element = False
   return element
@@ -82,7 +85,16 @@ def page_is_loaded(timeout=10): # quit after (timeout) seconds
 
 
 def add_to_output(name, value):
-  output[name] = value
+  if name in output:
+    exists = False
+    for dict_val in output.values():
+      for val in dict_val:
+        if val == value:
+          exists = True
+    if not exists:
+      output[name].append(value)
+  else:
+    output[name] = [value]
 
 
 def check_matches():
@@ -92,8 +104,14 @@ def check_matches():
       matches = [matches]
 
     for match in matches:
-      if match['name'] not in output:
-        element = find(match['xpath'])
+      multiple = False
+      if 'multiple' in match and match['multiple']:
+        multiple = True
+      elements = find(match['xpath'], multiple)
+      if not isinstance(elements, list):
+        elements = [elements]
+
+      for element in elements:
         if element:
           result = match['function'](element)
           if result:

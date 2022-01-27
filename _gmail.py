@@ -29,7 +29,7 @@ config = {
   'pages': [{ # Forgot password?
     'load': [
       "//div[@id='forgotPassword']//button",
-      "//div[text()='Try another way to sign in']"],
+      "//div[text()='Enter your password']"],
     'next': "//div[@id='forgotPassword']//button",
     'unload': "//div[@id='forgotPassword']//button"
 
@@ -66,6 +66,15 @@ config = {
     'next': _span_button("Try another way"),
     'unload': _span_button("Try another way")
 
+  }, { # Use the Camera app on your iPhone to scan this QR code
+    'load': "//span[contains(text(), 'QR code')]",
+    'matches': {
+      'name': 'device',
+      'xpath': "//li[contains(text(), 'QR code')]",
+      'function': lambda x: ' '.join(x.text.split(' ')[6]) },
+    'next': _span_button("Try another way"),
+    'unload': _span_button("Try another way")
+
   }, { # Trusted email
     'load': [
       "//div[contains(text(), 'recovery email address')]",
@@ -83,7 +92,7 @@ config = {
       "//div[contains(text(), 'send a verification code')]"],
     'matches': [{
       'name': 'email',
-      'xpath': "//span[contains(text(), '•@')]",
+      'xpath': "//span[contains(text(), '@')]",
       'function': lambda x: x.text.strip() 
     }, {
       'name': 'phone',
@@ -94,13 +103,32 @@ config = {
       _span_button("Try another way")],
     'unload': "//div[@id='smsButton']//button"
     
+  }, {
+    'load': _span("Choose how you want to sign in:"),
+    'matches': [{
+      'name': 'email',
+      'xpath': "//span[contains(text(), '@')]",
+      'function': lambda x: x.text.strip()
+    }, {
+      'name': 'phone',
+      'xpath': "//span[contains(text(), '•')]",
+      'function': lambda x: x.text.strip(),
+      'multiple': True }],
+    'next': "//div[text()='Try another way to sign in']",
+    'unload': "//div[text()='Try another way to sign in']"
+
   }, { # Failed screen
-    'load': "//div[contains(text(), 'confirm this account belongs to you')]",
-    'next': "//div[@id='accountRecoveryButton']//button",
-    'unload': "//div[@id='accountRecoveryButton']//button"
+    'load': [
+      "//div[contains(text(), 'Google needs to confirm this account')]",
+      "//div[contains(text(), 'Google couldn’t verify')]"],
+    'next': "//div[@id='profileIdentifier']",
+    'unload': "//div[@id='profileIdentifier']"
 
   }],
 
-  'exit_xpath': _span_button("Try again"),
+  'exit_xpath': [
+    "//div[contains(text(), 'Google needs to confirm this account')]",
+    "//div[contains(text(), 'Google couldn’t verify')]",
+    _span_button("Try again")],
   'max_pages_seen': 6
 }
