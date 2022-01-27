@@ -44,9 +44,8 @@ def enter_email(email):
   driver.get(config['entry'])
 
   find(config['entry_input']).send_keys(email)
-  next_button = find(config['entry_button'])
-  click_next(next_button)
-  unload_page(find(config['entry_unload']))
+  click_next(config['entry_button'])
+  unload_page(config['entry_unload'])
 
 
 def check_load_elements(timeout):
@@ -101,7 +100,8 @@ def check_matches():
             add_to_output(match['name'], result)
 
 
-def unload_page(indicator_element):
+def unload_page(indicator_xpath):
+  indicator_element = find(indicator_xpath)
   while True:
     try:
       text = indicator_element.text
@@ -109,20 +109,32 @@ def unload_page(indicator_element):
       break
 
 
-def click_next(button_element):
-  try:
-    button_element.click()
-  except:
+def click_next(xpaths):
+  success = False
+  if not isinstance(xpaths, list):
+    xpaths = [xpaths]
+
+  for button_xpath in xpaths:
+    button = find(button_xpath)
     try:
-      driver.execute_script("arguments[0].click()", button_element)
+      button.click()
+      success = True
     except:
-      raise ValueError("Button element not clickable")
+      try:
+        driver.execute_script("arguments[0].click()", button)
+        success = True
+      except:
+        pass
+    if success:
+      break
+  if not success:
+    raise ValueError("Button element not clickable")
 
 
 
 def next_step():
-  click_next(find(page['next']))
-  unload_page(find(page['unload']))
+  click_next(page['next'])
+  unload_page(page['unload'])
 
 
 def exit_condition():

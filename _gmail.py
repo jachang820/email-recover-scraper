@@ -1,4 +1,5 @@
 _span = lambda text: '''//span[text()="{0}"]'''.format(text)
+_span_button = lambda text: '{0}/parent::button'.format(_span(text))
 
 
 def _get_devices(div):
@@ -21,9 +22,9 @@ config = {
   
   'entry_input': "//input[@type='email']",
   
-  'entry_button': _span("Next"),
+  'entry_button': "//div[@id='identifierNext']//button",
 
-  'entry_unload': _span("Sign in"),
+  'entry_unload': "h1[@id='headingText']/span('Sign in')",
   
   'pages': [{ # Forgot password?
     'load': [
@@ -34,18 +35,18 @@ config = {
 
   }, { # Do you have your phone?
     'load': "//strong[text()='Do you have your phone?']",
-    'next': _span("Try another way"),
+    'next': _span_button("Try another way"),
     'unload': "//strong[text()='Do you have your phone?']"
 
   }, { # Google prompts disabled
     'load': "//div[contains(text(), 'Google prompts are disabled')]",
-    'next': _span("More ways to sign in"),
-    'unload': _span("More ways to sign in")
+    'next': _span_button("More ways to sign in"),
+    'unload': _span_button("More ways to sign in")
 
   }, { # Last password
     'load': "//div[starts-with(text(), 'Enter the last password')]",
-    'next': _span("Try another way"),
-    'unload': _span("Try another way")
+    'next': _span_button("Try another way"),
+    'unload': _span_button("Try another way")
 
   }, { # Device
     'load': "//span[starts-with(text(), 'Check your')]",
@@ -53,8 +54,8 @@ config = {
       'name': 'device',
       'xpath': "//div[contains(text(), 'sent a notification')]",
       'function': _get_devices },
-    'next': _span("Try another way"),
-    'unload': _span("Try another way")
+    'next': _span_button("Try another way"),
+    'unload': _span_button("Try another way")
 
   }, {
     'load': "//li[contains(text(), 'Get your')]",
@@ -62,8 +63,8 @@ config = {
       'name': 'device',
       'xpath': "//li[contains(text(), 'Get your')]",
       'function': lambda x: ' '.join(x.text.split(' ')[2:]) },
-    'next': _span("Try another way"),
-    'unload': _span("Try another way")
+    'next': _span_button("Try another way"),
+    'unload': _span_button("Try another way")
 
   }, { # Trusted email
     'load': [
@@ -73,18 +74,24 @@ config = {
       'name': 'email',
       'xpath': "//span[contains(text(), '•')]",
       'function': lambda x: x.text.strip() },
-    'next': _span("Try another way"),
+    'next': _span_button("Try another way"),
     'unload': "//div[@id='idvpreregisteredemailNext']//button"
 
-  }, { # Phone
+  }, { # Phone, email
     'load': [
       "//div[contains(text(), 'Confirm the phone number')]",
       "//div[contains(text(), 'send a verification code')]"],
-    'matches': {
+    'matches': [{
+      'name': 'email',
+      'xpath': "//span[contains(text(), '•@')]",
+      'function': lambda x: x.text.strip() 
+    }, {
       'name': 'phone',
       'xpath': "//span[contains(text(), '•')]",
-      'function': lambda x: x.text.strip() },
-    'next': _span("I don’t have my phone"),
+      'function': lambda x: x.text.strip() }],
+    'next': [
+      _span_button("I don’t have my phone"),
+      _span_button("Try another way")],
     'unload': "//div[@id='smsButton']//button"
     
   }, { # Failed screen
@@ -94,6 +101,6 @@ config = {
 
   }],
 
-  'exit_xpath': _span("Try again"),
+  'exit_xpath': _span_button("Try again"),
   'max_pages_seen': 6
 }
