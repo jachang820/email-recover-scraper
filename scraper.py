@@ -21,7 +21,7 @@ DEFAULT_EMAIL = 'some_email@domain.com'
 if __name__ == '__main__':
   # Enter email on command line as in ./scraper.py email
   email, service, quiet_mode, parser = _args.handle_args()
-  config = importlib.import_module('_' + service).config
+  config = importlib.import_module('services._' + service).config
 
   if not quiet_mode:
     parser.print_help() # Delete this line if you don't need help
